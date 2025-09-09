@@ -1,0 +1,130 @@
+{
+  "pieces": [
+    {
+      "assignment": "1a",
+      "composer": "Anonymous",
+      "title": "Agnus Dei",
+      "genre": "Chant",
+      "audioFile": "audio/1a_anonymous_agnus_dei.mp3"
+    },
+    {
+      "assignment": "1a",
+      "composer": "Anonymous",
+      "title": "Haec Dies",
+      "genre": "Chant",
+      "audioFile": "audio/1a_anonymous_haec_dies.mp3"
+    },
+    {
+      "assignment": "1a",
+      "composer": "Hildegard of Bingen",
+      "title": "O eterne deus",
+      "genre": "Chant",
+      "audioFile": "audio/1a_hildegard_of_bingen_o_eterne_deus.mp3"
+    },
+    {
+      "assignment": "1a",
+      "composer": "Thomas Aquinas",
+      "title": "Pange lingua gloriosi mysterium",
+      "genre": "Hymn",
+      "audioFile": "audio/1a_thomas_aquinas_pange_lingua_gloriosi_mysterium.mp3"
+    },
+    {
+      "assignment": "1b",
+      "composer": "Guillaume de Machaut",
+      "title": "Fera pessima / O livoris feritas / Fons totius",
+      "genre": "Motet",
+      "audioFile": "audio/1b_guillaume_de_machaut_fera_pessima_o_livoris_feritas_fons_totius.mp3"
+    },
+    {
+      "assignment": "1b",
+      "composer": "Leonin",
+      "title": "Viderunt Omnes",
+      "genre": "two-part organum",
+      "audioFile": "audio/1b_leonin_viderunt_omnes.mp3"
+    },
+    {
+      "assignment": "1b",
+      "composer": "Perotinus",
+      "title": "Viderunt Omnes",
+      "genre": "four-part organum",
+      "audioFile": "audio/1b_perotinus_viderunt_omnes.mp3"
+    },
+    {
+      "assignment": "2a",
+      "composer": "Anonymous",
+      "title": "La quinte estampie real\" estampie",
+      "genre": "Estampie",
+      "audioFile": "audio/2a_anonymous_la_quinte_estampie_real_estampie.mp3"
+    },
+    {
+      "assignment": "2a",
+      "composer": "Bernart de Ventadorn",
+      "title": "Can vei la lauzeta mover",
+      "genre": "Troubador Song",
+      "audioFile": "audio/2a_bernart_de_ventadorn_can_vei_la_lauzeta_mover.mp3"
+    },
+    {
+      "assignment": "2a",
+      "composer": "Comtessa de Dia",
+      "title": "A chantar m’er de so qu’eu no volria",
+      "genre": "Troubador Song",
+      "audioFile": "audio/2a_comtessa_de_dia_a_chantar_mer_de_so_queu_no_volria.mp3"
+    },
+    {
+      "assignment": "2a",
+      "composer": "Guillaume de Machaut",
+      "title": "Dame, de qui toute ma joie vient",
+      "genre": "Chanson",
+      "audioFile": "audio/2a_guillaume_de_machaut_dame_de_qui_toute_ma_joie_vient.mp3"
+    },
+    {
+      "assignment": "2b",
+      "composer": "Giovani Perligui da Palestrina",
+      "title": "Sanctus",
+      "genre": "Polyphonic Mass",
+      "audioFile": "audio/2b_giovani_perligui_da_palestrina_sanctus.mp3"
+    },
+    {
+      "assignment": "2b",
+      "composer": "Guillaume de Machaut",
+      "title": "Sanctus",
+      "genre": "Polyphonic Mass",
+      "audioFile": "audio/2b_guillaume_de_machaut_sanctus.mp3"
+    },
+    {
+      "assignment": "2b",
+      "composer": "Josquin de Prez",
+      "title": "Sanctus",
+      "genre": "Polyphonic Mass",
+      "audioFile": "audio/2b_josquin_de_prez_sanctus.mp3"
+    },
+    {
+      "assignment": "3a",
+      "composer": "Jacques Arcadet",
+      "title": "Il bianco e dolce signo",
+      "genre": "Madrigal",
+      "audioFile": "audio/3a_jacques_arcadet_il_bianco_e_dolce_signo.mp3"
+    },
+    {
+      "assignment": "3a",
+      "composer": "John farmer",
+      "title": "Fair Phyllis",
+      "genre": "Madrigal",
+      "audioFile": "audio/3a_john_farmer_fair_phyllis.mp3"
+    },
+    {
+      "assignment": "3a",
+      "composer": "Josquin de Prez",
+      "title": "Ave Maria Virgo Serena",
+      "genre": "Motet",
+      "audioFile": "audio/3a_josquin_de_prez_ave_maria_virgo_serena.mp3"
+    }
+  ],
+  "assignments": [
+    "1a",
+    "1b",
+    "2a",
+    "2b",
+    "3a"
+  ]
+}

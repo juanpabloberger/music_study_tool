@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Music Quiz Study Tool</title>
+    <meta name="description" content="Study Medieval & Renaissance music with flashcards, quizzes, and audio">
+    <meta name="theme-color" content="#007bff">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- iOS specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Music Quiz">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjMDA3YmZmIiByeD0iMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+CjxwYXRoIGQ9Ik0xMiAzdjEwLjU1Yy0uNTktLjM0LTEuMjctLjU1LTItLjU1QzggMTMgNyAxNCA3IDE2czEgMyAyIDNzMi0yIDItNHYtMS40NWMuNTkuMzQgMS4yNy41NSAyIC41NTIgMCAzLTEgMy0zcy0xLTMtMi0zLTIgMi0yIDRWOWw0LTVWM2gtNHoiLz4KPC9zdmc+Cjwvc3ZnPg==">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>Medieval & Renaissance Music Quiz</h1>
+            <nav>
+                <button id="study-btn" class="nav-btn active">Study</button>
+                <button id="quiz-btn" class="nav-btn">Quiz</button>
+                <button id="exam-sim-btn" class="nav-btn">Exam Sim</button>
+                <button id="flashcards-btn" class="nav-btn">Flashcards</button>
+                <button id="analytics-btn" class="nav-btn">Analytics</button>
+                <button id="progress-btn" class="nav-btn">Progress</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Study Mode -->
+            <section id="study-section" class="section active">
+                <div class="controls">
+                    <select id="assignment-filter">
+                        <option value="all">All Assignments</option>
+                    </select>
+                </div>
+                
+                <div id="piece-list" class="piece-grid">
+                    <!-- Pieces will be loaded here -->
+                </div>
+                
+                <div id="audio-player" class="player" style="display: none;">
+                    <div class="player-info">
+                        <h3 id="current-title"></h3>
+                        <p id="current-details"></p>
+                    </div>
+                    <audio id="audio" controls preload="metadata"></audio>
+                    <div class="player-controls">
+                        <button id="play-again">Play Again</button>
+                        <button id="close-player">Close</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quiz Mode -->
+            <section id="quiz-section" class="section">
+                <div id="quiz-setup">
+                    <h2>Start New Quiz</h2>
+                    <div class="quiz-options">
+                        <label>
+                            Difficulty:
+                            <select id="quiz-difficulty">
+                                <option value="easy">Easy - Multiple Choice</option>
+                                <option value="medium">Medium - Fill in with Hints</option>
+                                <option value="hard">Hard - Free Text Entry</option>
+                            </select>
+                        </label>
+                        <label>
+                            Assignment:
+                            <select id="quiz-assignment">
+                                <option value="all">All Assignments</option>
+                            </select>
+                        </label>
+                        <label>
+                            Questions:
+                            <select id="quiz-count">
+                                <option value="5">5 Questions</option>
+                                <option value="10">10 Questions</option>
+                                <option value="15">15 Questions</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="difficulty-info">
+                        <div id="difficulty-description">
+                            <strong>Easy Mode:</strong> Multiple choice questions with 4 options each. Perfect for learning and recognition practice.
+                        </div>
+                    </div>
+                    <button id="start-quiz" class="primary-btn">Start Quiz</button>
+                </div>
+
+                <div id="quiz-active" style="display: none;">
+                    <div class="quiz-header">
+                        <span id="question-counter">Question 1 of 5</span>
+                        <span id="quiz-score">Score: 0/0</span>
+                    </div>
+                    
+                    <div class="question">
+                        <audio id="quiz-audio" controls></audio>
+                        <button id="replay-btn">Play Again</button>
+                    </div>
+
+                    <form id="quiz-form">
+                        <!-- Easy Mode: Multiple Choice -->
+                        <div id="easy-questions" style="display: none;">
+                            <div class="form-group">
+                                <label>Title:</label>
+                                <div class="multiple-choice" id="title-choices"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Composer:</label>
+                                <div class="multiple-choice" id="composer-choices"></div>
+                            </div>
+                            <div class="form-group">
+                                <label>Genre:</label>
+                                <div class="multiple-choice" id="genre-choices"></div>
+                            </div>
+                        </div>
+
+                        <!-- Medium Mode: Fill in with hints -->
+                        <div id="medium-questions" style="display: none;">
+                            <div class="form-group">
+                                <label>Title: <span class="hint" id="title-hint"></span></label>
+                                <input type="text" id="title-input-medium" autocomplete="off" placeholder="Type your answer...">
+                            </div>
+                            <div class="form-group">
+                                <label>Composer: <span class="hint" id="composer-hint"></span></label>
+                                <input type="text" id="composer-input-medium" autocomplete="off" placeholder="Type your answer...">
+                            </div>
+                            <div class="form-group">
+                                <label>Genre: <span class="hint" id="genre-hint"></span></label>
+                                <input type="text" id="genre-input-medium" autocomplete="off" placeholder="Type your answer...">
+                            </div>
+                        </div>
+
+                        <!-- Hard Mode: Free text entry -->
+                        <div id="hard-questions" style="display: none;">
+                            <div class="form-group">
+                                <label>Title:</label>
+                                <input type="text" id="title-input" autocomplete="off" placeholder="Type the full title...">
+                            </div>
+                            <div class="form-group">
+                                <label>Composer:</label>
+                                <input type="text" id="composer-input" autocomplete="off" placeholder="Type the composer's name...">
+                            </div>
+                            <div class="form-group">
+                                <label>Genre:</label>
+                                <input type="text" id="genre-input" autocomplete="off" placeholder="Type the musical genre...">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="primary-btn">Submit Answer</button>
+                    </form>
+
+                    <div id="answer-feedback" style="display: none;">
+                        <div id="feedback-content"></div>
+                        <button id="next-question" class="primary-btn">Next Question</button>
+                    </div>
+                </div>
+
+                <div id="quiz-results" style="display: none;">
+                    <h2>Quiz Complete!</h2>
+                    <div id="final-score"></div>
+                    <div id="results-breakdown"></div>
+                    <button id="new-quiz" class="primary-btn">Take Another Quiz</button>
+                </div>
+            </section>
+
+            <!-- Exam Simulation Mode -->
+            <section id="exam-sim-section" class="section">
+                <h2>🎯 Quiz Simulation - Sept 16th Prep</h2>
+                
+                <div id="exam-setup">
+                    <div class="exam-info">
+                        <h3>Exam Format Simulation</h3>
+                        <p>Practice the exact quiz format: 30 minutes, 5 random excerpts, each played twice</p>
+                    </div>
+                    
+                    <div class="exam-options">
+                        <div class="exam-option">
+                            <label>
+                                <input type="checkbox" id="mystery-mode" checked>
+                                <strong>Mystery Mode</strong> - Hide composer/title info (recommended)
+                            </label>
+                        </div>
+                        <div class="exam-option">
+                            <label>
+                                Assignment Filter:
+                                <select id="exam-assignment">
+                                    <option value="all">All Periods</option>
+                                    <option value="1a,1b">Medieval Only</option>
+                                    <option value="2a,2b,3a">Renaissance Only</option>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button id="start-exam-sim" class="primary-btn exam-btn">🚀 Start 30-Minute Quiz Simulation</button>
+                </div>
+
+                <div id="exam-active" style="display: none;">
+                    <div class="exam-header">
+                        <div class="timer-display">
+                            <div class="timer-label">Time Remaining</div>
+                            <div id="exam-timer" class="timer">30:00</div>
+                        </div>
+                        <div class="exam-progress">
+                            <div class="progress-label">Progress</div>
+                            <div id="exam-progress">Piece <span id="current-piece">1</span> of 5</div>
+                        </div>
+                    </div>
+
+                    <div class="exam-audio-container">
+                        <div class="piece-info" id="piece-info-display">
+                            <div id="mystery-placeholder" style="display: none;">
+                                <h3>🎵 Mystery Piece #<span id="mystery-number">1</span></h3>
+                                <p>Listen carefully and identify this piece</p>
+                            </div>
+                            <div id="revealed-info" style="display: none;">
+                                <h3 id="exam-piece-title">Piece Title</h3>
+                                <p id="exam-piece-details">Composer • Genre • Assignment</p>
+                            </div>
+                        </div>
+                        
+                        <audio id="exam-audio" controls preload="metadata"></audio>
+                        <div class="audio-controls">
+                            <button id="replay-exam-audio">🔄 Replay (Auto-plays twice)</button>
+                            <div class="play-count">Played: <span id="play-count">0</span>/2</div>
+                        </div>
+                    </div>
+
+                    <div class="exam-form">
+                        <form id="exam-question-form">
+                            <div class="question-grid">
+                                <div class="form-group">
+                                    <label>Composer:</label>
+                                    <input type="text" id="exam-composer" autocomplete="off" placeholder="Full name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Title:</label>
+                                    <input type="text" id="exam-title" autocomplete="off" placeholder="Complete title">
+                                </div>
+                                <div class="form-group">
+                                    <label>Genre/Form:</label>
+                                    <input type="text" id="exam-genre" autocomplete="off" placeholder="e.g. Motet, Chanson">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group characteristics">
+                                <label>Musical Characteristics (describe what you hear):</label>
+                                <textarea id="exam-characteristics" rows="4" placeholder="Describe texture, rhythm, harmony, instrumentation, style features, etc."></textarea>
+                                <div class="vocab-hints">
+                                    <small><strong>Vocabulary hints:</strong> monophonic, polyphonic, modal, organum, melismatic, syllabic, homorhythmic, imitative, secular, sacred</small>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" id="reveal-info" class="secondary-btn">👁️ Reveal Piece Info</button>
+                                <button type="submit" class="primary-btn">Submit Answer</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="exam-feedback" style="display: none;">
+                        <div class="feedback-content">
+                            <div class="score-display">
+                                <div class="identification-score">
+                                    Identification: <span id="id-score">0</span>/3 points
+                                </div>
+                                <div class="analysis-score">
+                                    Analysis: <span id="analysis-score">0</span>/2 points
+                                </div>
+                            </div>
+                            <div class="correct-answers">
+                                <h4>Correct Information:</h4>
+                                <div id="correct-info"></div>
+                            </div>
+                            <div class="characteristics-feedback">
+                                <h4>Your Analysis vs. Key Characteristics:</h4>
+                                <div id="analysis-feedback"></div>
+                            </div>
+                        </div>
+                        <button id="next-exam-piece" class="primary-btn">Continue to Next Piece</button>
+                    </div>
+                </div>
+
+                <div id="exam-complete" style="display: none;">
+                    <div class="exam-results">
+                        <h2>🎉 Quiz Simulation Complete!</h2>
+                        <div class="final-exam-score">
+                            <div class="score-breakdown">
+                                <div class="score-item">
+                                    <span class="label">Total Score:</span>
+                                    <span class="value" id="total-exam-score">0/25</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="label">Identification:</span>
+                                    <span class="value" id="total-id-score">0/15</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="label">Analysis:</span>
+                                    <span class="value" id="total-analysis-score">0/10</span>
+                                </div>
+                                <div class="score-item">
+                                    <span class="label">Percentage:</span>
+                                    <span class="value" id="exam-percentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exam-recommendations">
+                            <h3>📊 Study Recommendations:</h3>
+                            <div id="study-recommendations"></div>
+                        </div>
+                        <div class="exam-actions">
+                            <button id="review-answers" class="secondary-btn">📝 Review Answers</button>
+                            <button id="retake-exam" class="primary-btn">🔄 Take Another Practice Quiz</button>
+                            <button id="export-results" class="secondary-btn">📄 Export Study Chart</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Mode -->
+            <section id="analytics-section" class="section">
+                <h2>📊 Study Analytics & Progress</h2>
+                
+                <div class="analytics-dashboard">
+                    <div class="analytics-row">
+                        <div class="analytics-card">
+                            <h3>🎧 Listening Frequency</h3>
+                            <div id="listening-stats">
+                                <div class="stat-grid" id="piece-frequency"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>📈 Performance Trends</h3>
+                            <div id="performance-chart">
+                                <canvas id="progress-chart" width="300" height="150"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-row">
+                        <div class="analytics-card">
+                            <h3>⚠️ Areas Needing Practice</h3>
+                            <div id="weak-areas">
+                                <div class="weak-area-list" id="weak-pieces"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-card">
+                            <h3>🎯 Quiz Readiness</h3>
+                            <div id="readiness-assessment">
+                                <div class="readiness-score" id="overall-readiness">
+                                    <div class="readiness-percentage">0%</div>
+                                    <div class="readiness-label">Quiz Ready</div>
+                                </div>
+                                <div class="readiness-breakdown" id="readiness-details"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analytics-actions">
+                    <button id="generate-study-plan" class="primary-btn">📋 Generate Custom Study Plan</button>
+                    <button id="show-reference" class="secondary-btn">📖 Quick Reference Chart</button>
+                    <button id="export-analytics" class="secondary-btn">📊 Export Progress Data</button>
+                </div>
+            </section>
+
+            <!-- Reference Chart Modal -->
+            <div id="reference-modal" class="modal" style="display: none;">
+                <div class="modal-content reference-chart">
+                    <div class="modal-header">
+                        <h2>📖 Medieval & Renaissance Music Reference Chart</h2>
+                        <div class="modal-controls">
+                            <button id="print-chart" class="secondary-btn">🖨️ Print</button>
+                            <button id="close-reference" class="close-btn">&times;</button>
+                        </div>
+                    </div>
+                    <div class="modal-body" id="reference-chart-content">
+                        <!-- Content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flashcards Mode -->
+            <section id="flashcards-section" class="section">
+                <h2>Study Flashcards</h2>
+                
+                <div class="flashcard-controls">
+                    <div class="control-group">
+                        <label>Definition Difficulty:</label>
+                        <select id="flashcard-difficulty">
+                            <option value="normal">Normal - Standard definitions</option>
+                            <option value="simple">Simple - Beginner-friendly explanations</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Filter by Lecture:</label>
+                        <select id="flashcard-lecture-filter">
+                            <option value="all">All Lectures</option>
+                            <option value="1a">Lecture 1a - Medieval Music Fundamentals</option>
+                            <option value="1b">Lecture 1b - Medieval Polyphony</option>
+                            <option value="2a">Lecture 2a - Secular Music</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Filter by Topic:</label>
+                        <select id="flashcard-topic-filter">
+                            <option value="all">All Topics</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <button id="shuffle-flashcards" class="primary-btn">Shuffle Cards</button>
+                        <button id="reset-progress-btn">Reset Progress</button>
+                    </div>
+                </div>
+
+                <div class="flashcard-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Current Card:</span>
+                        <span id="current-card-number">1</span> / <span id="total-cards">40</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Session Progress:</span>
+                        <span id="session-correct">0</span> correct, <span id="session-incorrect">0</span> incorrect
+                    </div>
+                </div>
+
+                <div id="flashcard-container">
+                    <div id="flashcard" class="flashcard">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <div class="flashcard-content">
+                                    <div class="flashcard-topic" id="flashcard-topic"></div>
+                                    <div class="flashcard-question" id="flashcard-question">
+                                        Click "Start Studying" to begin
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flashcard-back">
+                                <div class="flashcard-content">
+                                    <div class="flashcard-topic" id="flashcard-topic-back"></div>
+                                    <div class="flashcard-answer" id="flashcard-answer">
+                                        Answer will appear here
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flashcard-actions">
+                    <button id="start-flashcards" class="primary-btn">Start Studying</button>
+                    <button id="flip-card" class="hidden">Show Answer</button>
+                    <div id="response-buttons" class="hidden">
+                        <button id="incorrect-btn" class="response-btn incorrect">I got it wrong</button>
+                        <button id="correct-btn" class="response-btn correct">I got it right</button>
+                    </div>
+                    <button id="next-card" class="hidden">Next Card</button>
+                </div>
+
+                <div id="session-complete" class="session-complete hidden">
+                    <h3>Great job! You've completed this flashcard session.</h3>
+                    <div class="session-summary">
+                        <div>Cards studied: <span id="final-total"></span></div>
+                        <div>Correct: <span id="final-correct"></span></div>
+                        <div>Incorrect: <span id="final-incorrect"></span></div>
+                        <div>Accuracy: <span id="final-accuracy"></span>%</div>
+                    </div>
+                    <button id="study-again" class="primary-btn">Study Again</button>
+                </div>
+            </section>
+
+            <!-- Progress Mode -->
+            <section id="progress-section" class="section">
+                <h2>Your Progress</h2>
+                <div id="stats-overview">
+                    <div class="stat-card">
+                        <span class="stat-value" id="total-quizzes">0</span>
+                        <span class="stat-label">Quizzes Taken</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="avg-score">0%</span>
+                        <span class="stat-label">Average Score</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="best-score">0%</span>
+                        <span class="stat-label">Best Score</span>
+                    </div>
+                </div>
+                
+                <div id="recent-quizzes">
+                    <h3>Recent Quiz Results</h3>
+                    <div id="quiz-history"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="flashcard_data.js"></script>
+    <script src="characteristics_database.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
