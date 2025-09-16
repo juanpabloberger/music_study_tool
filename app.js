@@ -86,7 +86,11 @@ class MusicQuizApp {
             { assignment: '2b', composer: 'Giovani Perligui da Palestrina', title: 'Sanctus', genre: 'Polyphonic Mass', audioFile: 'audio/2b_giovani_perligui_da_palestrina_sanctus.mp3', youtubeUrl: 'https://youtu.be/O3HLzfnzBL0' },
             { assignment: '3a', composer: 'Josquin de Prez', title: 'Ave Maria Virgo Serena', genre: 'Motet', audioFile: 'audio/3a_josquin_de_prez_ave_maria_virgo_serena.mp3', youtubeUrl: 'https://youtu.be/xGkb5KFwx1I' },
             { assignment: '3a', composer: 'Jacques Arcadet', title: 'Il bianco e dolce signo', genre: 'Madrigal', audioFile: 'audio/3a_jacques_arcadet_il_bianco_e_dolce_signo.mp3', youtubeUrl: 'https://youtu.be/GUH11wqPRfU' },
-            { assignment: '3a', composer: 'John farmer', title: 'Fair Phyllis', genre: 'Madrigal', audioFile: 'audio/3a_john_farmer_fair_phyllis.mp3', youtubeUrl: 'https://youtu.be/D46R1Te0_VY' }
+            { assignment: '3a', composer: 'John farmer', title: 'Fair Phyllis', genre: 'Madrigal', audioFile: 'audio/3a_john_farmer_fair_phyllis.mp3', youtubeUrl: 'https://youtu.be/D46R1Te0_VY' },
+            { assignment: '3b', composer: 'Miguel Fuenllana', title: 'Paseabase el rey', genre: 'Lute Song', audioFile: 'audio/3b_miguel_fuenllana_paseabase_el_rey.mp3', youtubeUrl: 'https://youtu.be/I7F3sfyDl5U' },
+            { assignment: '3b', composer: 'John Downland', title: 'Flow My Tears', genre: 'Lute Song', audioFile: 'audio/3b_john_downland_flow_my_tears.mp3', youtubeUrl: 'https://youtu.be/u3clX2CJqzs' },
+            { assignment: '3b', composer: 'Tielman Susato', title: 'La Mourisque', genre: 'Ronde', audioFile: 'audio/3b_tielman_susato_la_mourisque.mp3', youtubeUrl: 'https://youtu.be/Imh7_XQRJxE' },
+            { assignment: '3b', composer: 'Tielman Susato', title: 'La dona', genre: 'Pavane and Galliard', audioFile: 'audio/3b_tielman_susato_la_dona.mp3', youtubeUrl: 'https://youtu.be/Ln7ea-5dsoo' }
         ];
         
         console.log(`Loaded ${this.pieces.length} pieces from CSV data`);
@@ -259,12 +263,24 @@ class MusicQuizApp {
             audio.currentTime = 0;
             audio.play().catch(e => console.log('Audio play failed:', e));
             
+            // Limit playback to first 90 seconds (1 minute 30 seconds) for test simulation
+            const stopAudioAt90Seconds = () => {
+                if (audio.currentTime >= 90) {
+                    audio.pause();
+                    audio.dispatchEvent(new Event('ended'));
+                }
+            };
+            
+            audio.addEventListener('timeupdate', stopAudioAt90Seconds);
+            
             // Play twice automatically
             let playCount = 0;
             audio.addEventListener('ended', () => {
+                audio.removeEventListener('timeupdate', stopAudioAt90Seconds);
                 playCount++;
                 if (playCount < 2) {
                     audio.currentTime = 0;
+                    audio.addEventListener('timeupdate', stopAudioAt90Seconds);
                     audio.play().catch(e => console.log('Audio replay failed:', e));
                 }
             }, { once: false });
@@ -479,12 +495,24 @@ class MusicQuizApp {
         audio.currentTime = 0;
         audio.play().catch(e => console.log('Quiz audio play failed:', e));
         
+        // Limit playback to first 90 seconds (1 minute 30 seconds) for test simulation
+        const stopAudioAt90Seconds = () => {
+            if (audio.currentTime >= 90) {
+                audio.pause();
+                audio.dispatchEvent(new Event('ended'));
+            }
+        };
+        
+        audio.addEventListener('timeupdate', stopAudioAt90Seconds);
+        
         // Play twice
         let playCount = 0;
         audio.addEventListener('ended', () => {
+            audio.removeEventListener('timeupdate', stopAudioAt90Seconds);
             playCount++;
             if (playCount < 2) {
                 audio.currentTime = 0;
+                audio.addEventListener('timeupdate', stopAudioAt90Seconds);
                 audio.play().catch(e => console.log('Quiz audio replay failed:', e));
             }
         }, { once: false });
@@ -626,7 +654,8 @@ class MusicQuizApp {
             this.highlightEasyChoices(piece, userAnswers);
         }
         
-        feedback.innerHTML = `
+        // Update the feedback content div instead of overwriting the entire feedback area
+        document.getElementById('feedback-content').innerHTML = `
             <div style="text-align: center; margin-bottom: 1rem;">
                 <div style="font-size: 1.2rem; font-weight: bold; color: ${isCorrect ? '#28a745' : '#dc3545'};">
                     ${isCorrect ? '✓ Correct!' : '✗ Incorrect'}
@@ -1366,16 +1395,28 @@ class MusicQuizApp {
         const audio = document.getElementById('exam-audio');
         this.examSession.playCount = 0;
         
+        // Limit playback to first 90 seconds (1 minute 30 seconds) for test simulation
+        const stopAudioAt90Seconds = () => {
+            if (audio.currentTime >= 90) {
+                audio.pause();
+                audio.dispatchEvent(new Event('ended'));
+            }
+        };
+        
         const playNext = () => {
             if (this.examSession.playCount < 2) {
                 this.examSession.playCount++;
                 document.getElementById('play-count').textContent = this.examSession.playCount;
                 audio.currentTime = 0;
+                audio.addEventListener('timeupdate', stopAudioAt90Seconds);
                 audio.play().catch(e => console.log('Exam audio play failed:', e));
             }
         };
         
-        audio.addEventListener('ended', playNext, { once: false });
+        audio.addEventListener('ended', () => {
+            audio.removeEventListener('timeupdate', stopAudioAt90Seconds);
+            playNext();
+        }, { once: false });
         playNext(); // Start first play
     }
 
