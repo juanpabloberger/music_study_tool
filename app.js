@@ -220,7 +220,17 @@ class MusicQuizApp {
             'audio/1b_guillaume_de_machaut_fera_pessima_o_livoris_feritas_fons_totius.mp3',
             'audio/1b_leonin_viderunt_omnes.mp3',
             'audio/1b_perotinus_viderunt_omnes.mp3',
-            'audio/2a_bernart_de_ventadorn_can_vei_la_lauzeta_mover.mp3'
+            'audio/2a_anonymous_la_quinte_estampie_real_estampie.mp3',
+            'audio/2a_bernart_de_ventadorn_can_vei_la_lauzeta_mover.mp3',
+            'audio/2a_comtessa_de_dia_a_chantar_mer_de_so_queu_no_volria.mp3',
+            'audio/2a_guillaume_de_machaut_dame_de_qui_toute_ma_joie_vient.mp3',
+            'audio/2b_giovani_perligui_da_palestrina_sanctus.mp3',
+            'audio/2b_guillaume_de_machaut_sanctus.mp3',
+            'audio/2b_josquin_de_prez_sanctus.mp3',
+            'audio/3a_jacques_arcadet_il_bianco_e_dolce_signo.mp3',
+            'audio/3a_john_farmer_fair_phyllis.mp3',
+            'audio/3a_josquin_de_prez_ave_maria_virgo_serena.mp3'
+            // Note: 3b assignment files will use YouTube fallback until audio files are processed
         ];
         return processedFiles.includes(audioFile);
     }
